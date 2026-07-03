@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 
 public static class BuildWebGL
@@ -38,7 +39,118 @@ public static class BuildWebGL
             cam.transform.localPosition = new Vector3(0, 1.2f, 0);
             cam.transform.localEulerAngles = Vector3.zero;
 
-            // Save the scene
+            // Add GameManager
+            var gmGO = new GameObject("GameManager");
+            var gm = gmGO.AddComponent<GameManager>();
+            gm.startingBankroll = 1000;
+            gm.minBet = 10;
+
+            // Add SaveManager
+            var smGO = new GameObject("SaveManager");
+            smGO.AddComponent<SaveManager>();
+
+            // Create Canvas for UI
+            var canvasGO = new GameObject("Canvas");
+            var canvas = canvasGO.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvasGO.AddComponent<CanvasScaler>();
+            canvasGO.AddComponent<GraphicRaycaster>();
+
+            // HUD Text
+            var hudTextGO = new GameObject("HUDText");
+            hudTextGO.transform.SetParent(canvasGO.transform);
+            var hudText = hudTextGO.AddComponent<Text>();
+            hudText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            hudText.rectTransform.anchorMin = new Vector2(0, 1);
+            hudText.rectTransform.anchorMax = new Vector2(0, 1);
+            hudText.rectTransform.anchoredPosition = new Vector2(10, -10);
+            hudText.alignment = TextAnchor.UpperLeft;
+            hudText.fontSize = 18;
+            hudText.text = "Bankroll: --";
+
+            // Pot Text
+            var potTextGO = new GameObject("PotText");
+            potTextGO.transform.SetParent(canvasGO.transform);
+            var potText = potTextGO.AddComponent<Text>();
+            potText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            potText.rectTransform.anchorMin = new Vector2(0.5f, 1);
+            potText.rectTransform.anchorMax = new Vector2(0.5f, 1);
+            potText.rectTransform.anchoredPosition = new Vector2(0, -10);
+            potText.alignment = TextAnchor.UpperCenter;
+            potText.fontSize = 18;
+            potText.text = "Pot: 0";
+
+            // Result Text (center)
+            var resultTextGO = new GameObject("ResultText");
+            resultTextGO.transform.SetParent(canvasGO.transform);
+            var resultText = resultTextGO.AddComponent<Text>();
+            resultText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            resultText.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            resultText.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            resultText.rectTransform.anchoredPosition = new Vector2(0, -50);
+            resultText.alignment = TextAnchor.MiddleCenter;
+            resultText.fontSize = 16;
+            resultText.text = "Results will show here.";
+
+            // Bet Input
+            var betInputGO = new GameObject("BetInput");
+            betInputGO.transform.SetParent(canvasGO.transform);
+            var input = betInputGO.AddComponent<InputField>();
+            var inputTextGO = new GameObject("Text");
+            inputTextGO.transform.SetParent(betInputGO.transform);
+            var inputText = inputTextGO.AddComponent<Text>();
+            inputText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            inputText.text = "100";
+            input.textComponent = inputText;
+            input.placeholder = null;
+            inputText.alignment = TextAnchor.MiddleCenter;
+            inputText.fontSize = 16;
+            input.GetComponent<RectTransform>().anchoredPosition = new Vector2(-200, -30);
+
+            // Roll Button
+            var rollButtonGO = new GameObject("RollButton");
+            rollButtonGO.transform.SetParent(canvasGO.transform);
+            var btn = rollButtonGO.AddComponent<Button>();
+            var btnTextGO = new GameObject("Text");
+            btnTextGO.transform.SetParent(rollButtonGO.transform);
+            var btnText = btnTextGO.AddComponent<Text>();
+            btnText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            btnText.text = "Roll";
+            btnText.alignment = TextAnchor.MiddleCenter;
+            btnText.fontSize = 16;
+
+            // Position UI elements roughly
+            var rtInput = input.GetComponent<RectTransform>();
+            rtInput.anchorMin = new Vector2(0.5f, 0);
+            rtInput.anchorMax = new Vector2(0.5f, 0);
+            rtInput.anchoredPosition = new Vector2(-60, 40);
+            rtInput.sizeDelta = new Vector2(100, 30);
+
+            var rtBtn = btn.GetComponent<RectTransform>();
+            rtBtn.anchorMin = new Vector2(0.5f, 0);
+            rtBtn.anchorMax = new Vector2(0.5f, 0);
+            rtBtn.anchoredPosition = new Vector2(60, 40);
+            rtBtn.sizeDelta = new Vector2(100, 30);
+
+            // Wire UI to GameManager
+            gm.hudText = hudText;
+            gm.potText = potText;
+            gm.rollButton = btn;
+            gm.betInput = input;
+            gm.resultText = resultText;
+
+            // Add HUD component
+            var hudGO = new GameObject("HUD");
+            var hud = hudGO.AddComponent<HUD>();
+            hud.gameManager = gm;
+            hud.bankrollText = hudText;
+            hud.potText = potText;
+            hud.resultText = resultText;
+
+            // Add WebInputHelper to camera
+            camGO.AddComponent<WebInputHelper>();
+
+            // Save scene
             EditorSceneManager.SaveScene(scene, scenePath);
             Debug.Log("Created demo scene at " + scenePath);
         }
