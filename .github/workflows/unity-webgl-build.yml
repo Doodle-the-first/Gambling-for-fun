@@ -1,0 +1,37 @@
+name: Unity WebGL Build and Deploy
+
+on:
+  push:
+    branches: [ "unity-voxel" ]
+  workflow_dispatch: {}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Unity (game-ci)
+        uses: game-ci/unity-installer@v2
+        with:
+          unityVersion: "2022.3.0f1"
+
+      - name: Build WebGL
+        # Use the Unity editor to run the build script we added. This assumes the installed Unity version's editor is on PATH via the installer action above.
+        run: |
+          echo "Starting Unity build..."
+          /opt/unity/Editor/Unity -batchmode -nographics -quit -projectPath . -executeMethod BuildWebGL.PerformBuild || true
+
+      - name: Archive WebGL build
+        uses: actions/upload-artifact@v4
+        with:
+          name: webgl-build
+          path: Builds/WebGL
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          publish_branch: gh-pages
+          publish_dir: ./Builds/WebGL
+          force_orphan: true
