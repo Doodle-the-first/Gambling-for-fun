@@ -1,7 +1,15 @@
-# Gambling-for-fun
+# Gambling-for-fun — Unity voxel conversion branch
 
-Repository placeholder. This repository will host a Unity-based voxel-style 3D conversion of the original game.
+This branch contains the initial Unity project skeleton and a minimal open-source voxel prototype to get the 3D conversion started.
 
-Planned branch: `unity-voxel` — contains Unity LTS project skeleton, open-source voxel engine module, sample scene, and conversion notes.
+What is included in this commit:
+- .gitignore (Unity)
+- .gitattributes (recommendations for Git LFS)
+- CONVERSION_PLAN.md (detailed conversion plan and next steps)
+- Packages/manifest.json (minimal so Unity recognizes a package manifest)
+- Assets/VoxelEngine/Scripts: simple voxel engine scaffold (Chunk generator, greedy mesher, player controller)
+- Assets/VoxelEngine/README.md (how to open and run the prototype)
 
-To start the conversion, reply here with `confirm` and I will create the unity-voxel branch and add the initial Unity project files.
+Notes:
+- This is a lightweight prototype focused on portability and open-source implementation. Use Git LFS for large binary assets (textures, models, audio).
+- Target Unity LTS 2022.3 (URP recommended for mobile). See CONVERSION_PLAN.md for details.

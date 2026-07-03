@@ -1,0 +1,33 @@
+# Unity
+# See https://github.com/github/gitignore/blob/main/Unity.gitignore
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+UserSettings/
+MemoryCaptures/
+sysinfo.txt
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.orig
+*.apk
+*.aab
+*.unitypackage
+# Asset meta data should only be ignored when the corresponding asset is also ignored
+!/[Aa]ssets/**/*.meta
+# Uncomment this line if you wish to ignore the asset store tools plugin
+# /Assets/AssetStoreTools*
